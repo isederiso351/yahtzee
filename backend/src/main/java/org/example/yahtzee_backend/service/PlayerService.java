@@ -31,12 +31,10 @@ public class PlayerService {
     @Autowired
     private TransactionService transactionService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     // === REGISTRAZIONE E AUTENTICAZIONE ===
 
-    public Player registerPlayer(String username, String email, String password) {
+    public Player registerPlayer(String username, String email, String password, PasswordEncoder passwordEncoder) {
         // Validazioni
         if (playerRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username already exists");
@@ -67,7 +65,7 @@ public class PlayerService {
         return savedPlayer;
     }
 
-    public Optional<Player> authenticatePlayer(String username, String password) {
+    public Optional<Player> authenticatePlayer(String username, String password, PasswordEncoder passwordEncoder) {
         Optional<Player> playerOpt = playerRepository.findByUsername(username);
 
         if (playerOpt.isPresent()) {

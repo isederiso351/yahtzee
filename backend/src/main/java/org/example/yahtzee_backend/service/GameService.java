@@ -5,6 +5,7 @@ import org.example.yahtzee_backend.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -139,6 +140,10 @@ public class GameService {
         return game;
     }
 
+    public boolean isPlayerCreator(Game game, Player player) {
+        return getCreator(game).getId().equals(player.getId());
+    }
+
     public Game startGame(Game game) {
         if (!game.canStart()) {
             logger.warn("Attempted to start game {} that cannot be started (status: {}, players: {})",
@@ -251,6 +256,10 @@ public class GameService {
         return players.get(nextIndex).getPlayer();
     }
 
+    public Player getCreator(Game game){
+        return game.getPlayers().getFirst().getPlayer();
+    }
+
     public void advanceToNextPlayer(Game game) {
         Player nextPlayer = getNextPlayer(game);
         if (nextPlayer != null) {
@@ -311,8 +320,15 @@ public class GameService {
     public List<Game> findAvailableGames() {
         return gameRepository.findAvailableGames();
     }
+    public List<Game> findAvailableGames(Pageable pageable) {
+        return gameRepository.findAvailableGames();
+    }
 
     public List<Game> findAvailableGamesByBetAmount(BigDecimal betAmount) {
+        return gameRepository.findAvailableGamesByBetAmount(betAmount);
+    }
+
+    public List<Game> findAvailableGamesByBetAmount(BigDecimal betAmount, Pageable pageable) {
         return gameRepository.findAvailableGamesByBetAmount(betAmount);
     }
 
@@ -395,4 +411,6 @@ public class GameService {
         return gameRepository.findById(game.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
     }
+
+
 }

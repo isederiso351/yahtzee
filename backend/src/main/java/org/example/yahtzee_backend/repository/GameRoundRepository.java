@@ -1,5 +1,6 @@
 package org.example.yahtzee_backend.repository;
 
+import org.example.yahtzee_backend.domain.YahtzeeCategory;
 import org.example.yahtzee_backend.entity.GameRound;
 import org.example.yahtzee_backend.entity.Game;
 import org.example.yahtzee_backend.entity.Player;
@@ -55,5 +56,5 @@ public interface GameRoundRepository extends JpaRepository<GameRound, Long> {
     List<GameRound> findByIsCompletedTrueOrderByCreatedAtDesc();
 
     // Rounds per categoria (per statistiche)
-    List<GameRound> findBySelectedCategoryAndIsCompletedTrue(GameRound.YahtzeeCategory category);
+    List<GameRound> findBySelectedCategoryAndIsCompletedTrue(YahtzeeCategory category);
 }

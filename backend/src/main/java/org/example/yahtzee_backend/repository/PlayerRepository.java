@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,10 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     // Cerca giocatori per username (case insensitive)
     @Query("SELECT p FROM Player p WHERE LOWER(p.username) LIKE LOWER(CONCAT('%', :username, '%'))")
     List<Player> findByUsernameContainingIgnoreCase(@Param("username") String username);
+
+    // Giocatori inattivi da un certo periodo
+    @Query("SELECT p FROM Player p WHERE p.lastActivity < :cutoffDate AND p.isActive = true")
+    List<Player> findInactivePlayersSince(@Param("cutoffDate") LocalDateTime cutoffDate);
 
     // Statistiche generali
     @Query("SELECT COUNT(p) FROM Player p WHERE p.isActive = true")

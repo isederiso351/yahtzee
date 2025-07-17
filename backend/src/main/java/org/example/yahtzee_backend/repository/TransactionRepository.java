@@ -33,6 +33,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByPlayerAndTypeOrderByCreatedAtDesc(Player player, Transaction.TransactionType type);
 
     // Transazioni per giocatore in un periodo
+    @Query("SELECT t FROM Transaction t WHERE t.createdAt BETWEEN :startDate AND :endDate ORDER BY t.createdAt DESC")
+    List<Transaction> findByDateRange(@Param("startDate") LocalDateTime startDate,
+                                               @Param("endDate") LocalDateTime endDate);
+
+    // Transazioni per giocatore in un periodo
     @Query("SELECT t FROM Transaction t WHERE t.player = :player AND t.createdAt BETWEEN :startDate AND :endDate ORDER BY t.createdAt DESC")
     List<Transaction> findByPlayerAndDateRange(@Param("player") Player player,
                                                @Param("startDate") LocalDateTime startDate,

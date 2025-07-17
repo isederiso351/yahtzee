@@ -40,7 +40,6 @@ public class Game {
     private BigDecimal betAmount;
 
     @Column(nullable = false)
-    @Min(value = 2, message = "At least 2 players required")
     private Integer maxPlayers = 2; // Default 2 giocatori
 
     @Column(nullable = false)

@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
@@ -38,47 +40,19 @@ public class GameRound {
     @Max(value = 13, message = "Round number cannot exceed 13")
     private Integer roundNumber;
 
-    @Column(nullable = false)
-    @Min(value = 1, message = "Roll number must be positive")
-    @Max(value = 3, message = "Roll number cannot exceed 3")
-    private Integer rollNumber;
+    // Lista dei lanci - ogni stringa rappresenta 5 dadi es. "14635"
+    @ElementCollection
+    @CollectionTable(name = "dice_rolls", joinColumns = @JoinColumn(name = "game_round_id"))
+    @OrderColumn(name = "roll_order")
+    @Column(name = "roll_result", length = 5)
+    private List<String> diceRolls = new ArrayList<>();
 
-    // I 5 dadi (valori da 1 a 6)
-    @Column(nullable = false)
-    @Min(value = 1) @Max(value = 6)
-    private Integer dice1;
-
-    @Column(nullable = false)
-    @Min(value = 1) @Max(value = 6)
-    private Integer dice2;
-
-    @Column(nullable = false)
-    @Min(value = 1) @Max(value = 6)
-    private Integer dice3;
-
-    @Column(nullable = false)
-    @Min(value = 1) @Max(value = 6)
-    private Integer dice4;
-
-    @Column(nullable = false)
-    @Min(value = 1) @Max(value = 6)
-    private Integer dice5;
-
-    // Dadi che il giocatore vuole tenere per il prossimo lancio
-    @Column(nullable = false)
-    private Boolean keepDice1 = false;
-
-    @Column(nullable = false)
-    private Boolean keepDice2 = false;
-
-    @Column(nullable = false)
-    private Boolean keepDice3 = false;
-
-    @Column(nullable = false)
-    private Boolean keepDice4 = false;
-
-    @Column(nullable = false)
-    private Boolean keepDice5 = false;
+    // Lista dei dadi tenuti - ogni stringa è 5 bit es. "10010"
+    @ElementCollection
+    @CollectionTable(name = "kept_dice", joinColumns = @JoinColumn(name = "game_round_id"))
+    @OrderColumn(name = "kept_order") // ← E QUESTO!
+    @Column(name = "kept_pattern", length = 5)
+    private List<String> keptDice = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -95,41 +69,12 @@ public class GameRound {
     private LocalDateTime createdAt;
 
     // Metodi di utilità
-    public int[] getDiceValues() {
-        return new int[]{dice1, dice2, dice3, dice4, dice5};
+
+    public int getRollCount(){
+        return this.diceRolls.size();
     }
 
-    public void setDiceValues(int[] diceValues) {
-        if (diceValues.length != 5) {
-            throw new IllegalArgumentException("Must provide exactly 5 dice values");
-        }
-        this.dice1 = diceValues[0];
-        this.dice2 = diceValues[1];
-        this.dice3 = diceValues[2];
-        this.dice4 = diceValues[3];
-        this.dice5 = diceValues[4];
-    }
 
-    public boolean[] getKeptDice() {
-        return new boolean[]{keepDice1, keepDice2, keepDice3, keepDice4, keepDice5};
-    }
-
-    public void setKeptDice(boolean[] keptDice) {
-        if (keptDice.length != 5) {
-            throw new IllegalArgumentException("Must provide exactly 5 boolean values");
-        }
-        this.keepDice1 = keptDice[0];
-        this.keepDice2 = keptDice[1];
-        this.keepDice3 = keptDice[2];
-        this.keepDice4 = keptDice[3];
-        this.keepDice5 = keptDice[4];
-    }
-
-    public void completeRound(YahtzeeCategory category, int finalScore) {
-        this.selectedCategory = category;
-        this.score = finalScore;
-        this.isCompleted = true;
-    }
 
     // Enum per le categorie del punteggio Yahtzee
     @Getter

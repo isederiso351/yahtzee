@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -65,6 +66,8 @@ public class Transaction {
     }
 
     // Enum per i tipi di transazione
+    @Getter
+    @AllArgsConstructor
     public enum TransactionType {
         DEPOSIT("Deposito"),
         WITHDRAWAL("Prelievo"),
@@ -76,13 +79,5 @@ public class Transaction {
         PENALTY("Penalità");
 
         private final String description;
-
-        TransactionType(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
     }
 }

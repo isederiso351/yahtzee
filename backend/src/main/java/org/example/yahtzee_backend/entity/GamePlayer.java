@@ -41,9 +41,6 @@ public class GamePlayer {
     @Column(nullable = false)
     private Boolean isActive = true; // Se il giocatore è ancora attivo nella partita
 
-    @Column(nullable = false)
-    private Integer currentRollCount = 0; // Numero di lanci nel turno corrente (max 3)
-
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime joinedAt;
@@ -51,21 +48,5 @@ public class GamePlayer {
     // Metodi di utilità
     public void addScore(int score) {
         this.totalScore += score;
-    }
-
-    public void resetRollCount() {
-        this.currentRollCount = 0;
-    }
-
-    public void incrementRollCount() {
-        this.currentRollCount++;
-    }
-
-    public boolean canRoll() {
-        return this.currentRollCount < 3;
-    }
-
-    public int getRemainingRolls() {
-        return 3 - this.currentRollCount;
     }
 }
